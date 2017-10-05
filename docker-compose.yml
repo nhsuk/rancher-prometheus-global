@@ -1,0 +1,82 @@
+version: '2'
+
+volumes:
+  prometheus_data:
+  alertmanager-data:
+  alertmanager-etc:
+
+services:
+
+  prometheus:
+    image: prom/prometheus:v1.7.1
+    volumes:
+      - prometheus_data:/prometheus
+    ports:
+      - 9090:9090/tcp
+    volumes_from:
+      - prom-conf
+    command:
+      - -alertmanager.url=http://alertmanager:9093
+      - -config.file=/etc/prom-conf/prometheus.yml
+      - -storage.local.path=/prometheus
+      - -web.console.libraries=/etc/prometheus/console_libraries
+      - -web.console.templates=/etc/prometheus/consoles
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.sidekicks: prom-conf
+
+  prom-conf:
+    image: nhsuk/prom-conf
+    network_mode: none
+    volumes:
+      - /etc/prom-conf/
+    labels:
+      io.rancher.container.pull_image: always
+
+  grafana:
+    image: grafana/grafana:4.4.3
+    environment:
+      GF_AUTH_GITHUB_ENABLED: 'true'
+      GF_AUTH_GITHUB_ALLOW_SIGN_UP: 'true'
+      GF_AUTH_GITHUB_CLIENT_ID: $GITHUB_CLIENT_ID
+      GF_AUTH_GITHUB_CLIENT_SECRET: $GITHUB_CLIENT_SECRET
+      GF_AUTH_GITHUB_SCOPES: user:email,read:org
+      GF_AUTH_GITHUB_AUTH_URL: https://github.com/login/oauth/authorize
+      GF_AUTH_GITHUB_TOKEN_URL: https://github.com/login/oauth/access_token
+      GF_AUTH_GITHUB_API_URL: https://api.github.com/user3000
+      GF_AUTH_GITHUB_ALLOWED_ORGANIZATIONS: $GITHUB_ALLOWED_ORGANIZATIONS
+      GF_SERVER_ROOT_URL: $SERVER_ROOT_URL
+      GF_SECURITY_ADMIN_USER: $ADMIN_USER
+      GF_SECURITY_ADMIN_PASSWORD: $ADMIN_PASSWORD
+    volumes_from:
+      - grafana-storage
+    ports:
+      - 80:3000/tcp
+      - 3000:3000/tcp
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.sidekicks: grafana-storage
+
+  grafana-storage:
+    image: busybox
+    volumes:
+      - /var/lib/grafana
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.start_once: 'true'
+
+  blackbox-exporter:
+    image: prom/blackbox-exporter
+    labels:
+      io.rancher.container.pull_image: always
+
+  alertmanager:
+    image: prom/alertmanager
+    volumes:
+      - alertmanager-etc:/etc/alertmanager/
+      - alertmanager-data:/alertmanager/
+    command:
+      - -config.file=/etc/alertmanager/config.yml
+      - -storage.path=/alertmanager
+    labels:
+      io.rancher.container.pull_image: always
