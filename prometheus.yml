@@ -15,7 +15,6 @@ alerting:
 
 scrape_configs:
 
-
 - job_name: Prometheus
   scrape_interval: 15s
   scrape_timeout: 10s
@@ -24,7 +23,6 @@ scrape_configs:
   static_configs:
   - targets:
     - 127.0.0.1:9090
-
 
 - job_name: 'datacenter_federation'
   scrape_interval: 15s
@@ -38,8 +36,41 @@ scrape_configs:
 
   static_configs:
     - targets:
-      - 'nhsuk-dev.trafficmanager.net:9090'
-      - 'nhsuk-staging.trafficmanager.net:9090'
+      - 'nhsuk-dev.uksouth.cloudapp.azure.com:9090'
+      - 'nhsuk-staging.uksouth.cloudapp.azure.com:9090'
+      - 'nhsuk-production.uksouth.cloudapp.azure.com:9090'
+      - 'nhsuk-production-ukw.ukwest.cloudapp.azure.com:9090'
+
+- job_name: 'HostMetrics'
+
+  static_configs:
+    - targets:
+      - 'nhsuk-production-ukw01.ukwest.cloudapp.azure.com:19100'
+      - 'nhsuk-production-ukw02.ukwest.cloudapp.azure.com:19100'
+      - 'nhsuk-production-ukw03.ukwest.cloudapp.azure.com:19100'
+      - 'nhsuk-production-ukw04.ukwest.cloudapp.azure.com:19100'
+      - 'nhsuk-production-uks01.uksouth.cloudapp.azure.com:19100'
+      - 'nhsuk-production-uks02.uksouth.cloudapp.azure.com:19100'
+      - 'nhsuk-production-uks03.uksouth.cloudapp.azure.com:19100'
+      - 'nhsuk-production-uks04.uksouth.cloudapp.azure.com:19100'
+      labels:
+        environment: production
+
+
+- job_name: 'RancherServerMetrics'
+
+  static_configs:
+    - targets:
+      - 'nhsuk-production-ukw01.ukwest.cloudapp.azure.com:18080'
+      - 'nhsuk-production-ukw02.ukwest.cloudapp.azure.com:18080'
+      - 'nhsuk-production-ukw03.ukwest.cloudapp.azure.com:18080'
+      - 'nhsuk-production-ukw04.ukwest.cloudapp.azure.com:18080'
+      - 'nhsuk-production-uks01.uksouth.cloudapp.azure.com:18080'
+      - 'nhsuk-production-uks02.uksouth.cloudapp.azure.com:18080'
+      - 'nhsuk-production-uks03.uksouth.cloudapp.azure.com:18080'
+      - 'nhsuk-production-uks04.uksouth.cloudapp.azure.com:18080'
+      labels:
+        environment: production
 
 - job_name: blackbox
   params:
