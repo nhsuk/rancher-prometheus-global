@@ -40,6 +40,8 @@ scrape_configs:
       - 'nhsuk-staging.uksouth.cloudapp.azure.com:9090'
       - 'nhsuk-production.uksouth.cloudapp.azure.com:9090'
       - 'nhsuk-production-ukw.ukwest.cloudapp.azure.com:9090'
+      - 'phe-staging.trafficmanager.net:9090'
+      - 'phe-prod.trafficmanager.net:9090'
 
 - job_name: 'HostMetrics'
 
