@@ -85,7 +85,8 @@ scrape_configs:
   static_configs:
   - targets:
     - https://beta.nhs.uk/
-    - https://beta.nhs.uk/finders/find-help/
+    - https://beta.nhs.uk/find-a-pharmacy/?check
+    - https://beta.nhs.uk/find-a-pharmacy/results?location=ls1&check
     - https://beta.nhs.uk/book-a-gp-appointment/results?search=&postcode=ls28
     - https://beta.nhs.uk/gp-surgeries/39116
     - https://register-with-a-gp-beta.service.nhs.uk/
